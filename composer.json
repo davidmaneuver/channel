@@ -1,0 +1,24 @@
+{
+    "name": "maneuver/channel",
+    "description": "PHP library for the Wordpress REST API",
+    "keywords": ["wordpress", "api", "rest api", "php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David De Coninck",
+            "email": "david@maneuver.be"
+        }
+    ],
+    "type": "project",
+    "require": {
+		"php": ">=5.4"
+    },
+	"require-dev": {
+		"phpunit/phpunit": "5.2.*"
+    },
+	"autoload": {
+        "psr-4": {
+            "Maneuver\\": "src/"
+        }
+    }
+}
