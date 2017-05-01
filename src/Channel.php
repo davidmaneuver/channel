@@ -86,7 +86,7 @@ class Channel {
     }
 
     $res = $client->request('GET', $endpoint, $requestOptions);
-    return new Response($res);
+    return new Response($this, $res);
   }
 
 }

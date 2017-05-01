@@ -1,3 +1,12 @@
 ## PHP library for the Wordpress REST API
 
-WIP
+**WIP!**
+
+---
+
+todo:
+
+- examples:
+  - posts
+  - pages
+  - taxonomies

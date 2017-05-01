@@ -7,21 +7,48 @@ use Maneuver\Models\Post;
 abstract class ModelFactory {
 
   public static function create(\stdClass $data) {
-    $post_type = $data->type;
-
-    $class_namespace = '\\Maneuver\\Models\\';
-    $class_name = $class_namespace . ucfirst($post_type);
-
-    if (!class_exists($class_name)) {
-      // Fallback to a basic Post.
-      // Will be the case for custom post types.
-      $class_name = $class_namespace . 'Post';
-    }
-
-    $post = new $class_name();
+    // var_dump($data);exit;
+    $class = self::findClass($data);
+    $post = new $class();
     $post = self::cast($post, $data);
 
     return $post;
+  }
+
+  private static function findClass($data) {
+    $namespace = '\\Maneuver\\Models\\';
+    $fallback = 'Post';
+    $name = '';
+
+    if (isset($data->avatar_urls)) {
+      $name = 'User';
+    }
+
+    if (isset($data->media_type)) {
+      $name = 'Attachment';
+    }
+
+    if (isset($data->hierarchical)) {
+      $name = 'Taxonomy';
+    }
+
+    if (isset($data->taxonomy)) {
+      $name = 'Term';
+    }
+
+    if (isset($data->type)) {
+      $name = ucfirst($data->type);
+    }
+
+    $class = $namespace . $name;
+
+    if (!class_exists($class)) {
+      // Fallback to a basic Post.
+      // Will be the case for custom post types.
+      $class = $namespace . $fallback;
+    }
+
+    return $class;
   }
 
   private static function cast($destination, $sourceObject)
