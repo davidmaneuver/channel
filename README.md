@@ -2,6 +2,8 @@
 
 **WIP!**
 
+Currently only supports GET requests.
+
 ---
 
 todo:

@@ -53,15 +53,17 @@ class Channel {
    * 
    * @since 1.0.0
    */
-  public function request($params) {
-    if (is_array($params)) {
-      // TODO: create string from array. or does Guzzle do this?
-      $params = 'url';
-    }
+  public function request($endpoint, $params = [], $method = 'GET') {
+    return $this->doRequest($endpoint, $params, $method);
+  }
 
-    if (is_string($params)) {
-      return $this->doRequest($params);
-    }
+  /**
+   * Shortcut for the request method.
+   * 
+   * @since 1.0.0
+   */
+  public function get($endpoint, $params = []) {
+    return $this->request($endpoint, $params);
   }
 
   /**
@@ -69,7 +71,11 @@ class Channel {
    * 
    * @since 1.0.0
    */
-  protected function doRequest($endpoint, $args = []) {
+  protected function doRequest($endpoint, $args = [], $method = 'GET') {
+    if ($method != 'GET') {
+      throw new Exception('Only GET request are supported at the moment.');
+    }
+
     $client = new \GuzzleHttp\Client([
       'base_uri' => $this->base_uri,
     ]);
@@ -85,8 +91,30 @@ class Channel {
       $requestOptions['headers'] = $headers;
     }
 
-    $res = $client->request('GET', $endpoint, $requestOptions);
+    $requestOptions = array_merge($requestOptions, $args);
+
+    $res = $client->request($method, $endpoint, $requestOptions);
     return new Response($this, $res);
+  }
+
+  /****************/
+  /*** ALIASSES ***/
+  /****************/
+
+  public function getPosts($args = []) {
+    return $this->request("posts", $args)->getData();
+  }
+
+  public function getPost($id) {
+    return $this->request("posts/$id")->getData();
+  }
+
+  public function getPages($args = []) {
+    return $this->request("pages", $args)->getData();
+  }
+
+  public function getPage($id) {
+    return $this->request("pages/$id")->getData();
   }
 
 }

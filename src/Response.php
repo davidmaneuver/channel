@@ -6,13 +6,16 @@ class Response {
 
   private $channel;
   private $statusCode;
-  private $data = [];
+  private $data = null;
 
   public function __construct(Channel $channel, \GuzzleHttp\Psr7\Response $response) {
     $this->channel = $channel;
     $this->statusCode = $response->getStatusCode();
-    
-    $this->parseData((string) $response->getBody(), $channel);
+
+
+    if ($this->statusCode === 200) {
+      $this->parseData((string) $response->getBody(), $channel);
+    }
   }
 
   /**
@@ -45,9 +48,19 @@ class Response {
       $body = json_decode($body);
 
       if ($body) {
+
+        // Some calls (like /taxonomies) return an object and not an array.
         if (is_object($body)) {
-          // Some calls return an object and not an array.
-          $body = (array) $body;
+          
+          if (isset($body->id)) {
+            // Calls returning just 1 item also return an object.
+            // Lets just make it a model. Right here, right now.
+            $data = $this->createModel($body);
+          } else {
+            // Cast to an array to make us of the array_map method below.
+            $body = (array) $body;
+          }
+          
         }
         if (is_array($body)) {
 
