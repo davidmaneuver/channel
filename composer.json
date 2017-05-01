@@ -9,7 +9,7 @@
             "email": "david@maneuver.be"
         }
     ],
-    "type": "project",
+    "type": "library",
     "require": {
 		"php": ">=5.4",
         "guzzlehttp/guzzle": "^6.2"
