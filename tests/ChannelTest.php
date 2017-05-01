@@ -1,5 +1,7 @@
 <?php 
 
+ini_set('display_errors', 0);
+
 class ChannelTest extends PHPUnit_Framework_TestCase {
 	
   /**
@@ -12,15 +14,12 @@ class ChannelTest extends PHPUnit_Framework_TestCase {
   public function testIsThereAnySyntaxError(){
   	$var = new Maneuver\Channel(['uri' => '/']);
   	$this->assertTrue(is_object($var));
-  	unset($var);
   }
 
   public function testRequest() {
     $c = new Maneuver\Channel(['uri' => 'http://example.com/']);
     $r = $c->request('posts');
     $this->assertInstanceOf(Maneuver\Response::class, $r);
-    unset($c);
-    unset($r);
   }
 
   public function testNoUriException() {
