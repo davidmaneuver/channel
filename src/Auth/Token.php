@@ -9,6 +9,14 @@ namespace Maneuver\Auth;
 */
 class Token extends Auth {
 
+  private $token;
 
+  public function __construct($token) {
+    $this->token = $token;
+  }
+
+  public function setRequestHeaders(&$headers) {
+    $headers['API_TOKEN'] = $this->token;
+  }
 
 }

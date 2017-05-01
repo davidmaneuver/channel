@@ -10,21 +10,22 @@ class ChannelTest extends PHPUnit_Framework_TestCase {
   *
   */
   public function testIsThereAnySyntaxError(){
-  	$var = new Maneuver\Channel([]);
+  	$var = new Maneuver\Channel(['uri' => '/']);
   	$this->assertTrue(is_object($var));
   	unset($var);
   }
 
-  public function testRawRequest() {
-    $c = new Maneuver\Channel([]);
-    $this->assertEquals('raw request', $c->request('test'));
+  public function testRequest() {
+    $c = new Maneuver\Channel(['uri' => 'http://example.com/']);
+    $r = $c->request('posts');
+    $this->assertInstanceOf(Maneuver\Response::class, $r);
     unset($c);
+    unset($r);
   }
 
-  public function testArrayRequest() {
-    $c = new Maneuver\Channel([]);
-    $this->assertEquals('raw request', $c->request([]));
-    unset($c);
+  public function testNoUriException() {
+    $this->expectException(ErrorException::class);
+    new Maneuver\Channel([]);
   }
   
 }

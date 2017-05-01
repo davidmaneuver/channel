@@ -2,6 +2,8 @@
 
 namespace Maneuver;
 
+use Maneuver\Auth\Auth;
+
 /**
 *  Main class
 * 
@@ -10,21 +12,32 @@ namespace Maneuver;
 class Channel {
 
   protected $auth;
+  protected $base_uri;
 
-  public function __construct($options) {
-
-    if (is_array($options)) {
-      $this->initFromArray($options);
-    }
+  public function __construct(array $options) {
+    $this->initFromArray($options);
   }
 
-  protected function initFromArray($options) {
-    if (isset($options['username']) && isset($options['password'])) {
-      // TODO: handle basic auth
+  /**
+   * Initialize the class with an array of options.
+   * 
+   * @since 1.0.0
+   */
+  protected function initFromArray(array $options) {
+    if (empty($options['uri'])) {
+      throw new \ErrorException('URI is required and was not provided');
     }
 
-    if (isset($options['api_token'])) {
+    $this->base_uri = $options['uri'];
+
+    if (isset($options['token'])) {
       // TODO: handle api token auth
+      $this->auth = Auth::create($options['token']);
+    } else if (isset($options['username']) && isset($options['password'])) {
+      // TODO: handle basic auth
+      $this->auth = Auth::create($options['username'], $options['password']);
+    } else {
+      $this->auth = Auth::create();
     }
   }
 
@@ -35,13 +48,29 @@ class Channel {
     }
 
     if (is_string($params)) {
-      return $this->requestRaw($params);
+      $response = $this->doRequest($params);
+      return $response;
     }
   }
 
-  protected function requestRaw($endpoint) {
-    // TODO: make request with Guzzle.
-    return "raw request";
+  protected function doRequest($endpoint) {
+    $client = new \GuzzleHttp\Client([
+      'base_uri' => $this->base_uri,
+    ]);
+
+    $requestOptions = [];
+    $requestOptions['http_errors'] = FALSE;
+
+    $headers = [];
+
+    $this->auth->setRequestHeaders($headers);
+
+    if (!empty($headers)) {
+      $requestOptions['headers'] = $headers;
+    }
+
+    $res = $client->request('GET', $endpoint, $requestOptions);
+    return new Response($res);
   }
 
 }
