@@ -2,7 +2,7 @@
 
 namespace Maneuver\Models;
 
-abstract class Base {
+class Base {
 
   protected $channel;
   protected $rendered_props = [];

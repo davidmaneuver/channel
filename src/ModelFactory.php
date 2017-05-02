@@ -17,9 +17,9 @@ abstract class ModelFactory {
 
   private static function findClass($data, $customClass = null) {
     $namespace = '\\Maneuver\\Models\\';
-    $fallback = 'Post';
+    $fallback = 'Base';
     $name = '';
-    $type = 'post';
+    $type = '';
 
     // Determine the type of the object.
     if (isset($data->avatar_urls)) {
@@ -28,8 +28,11 @@ abstract class ModelFactory {
     if (isset($data->media_type)) {
       $type = 'media';
     }
-    if (isset($data->hierarchical)) {
+    if (isset($data->hierarchical) && isset($data->types)) {
       $type = 'taxonomy';
+    }
+    if (isset($data->hierarchical) && isset($data->taxonomies)) {
+      $type = 'posttype';
     }
     if (isset($data->taxonomy)) {
       $type = 'term';
@@ -54,6 +57,9 @@ abstract class ModelFactory {
         break;
       case 'page':
         $name = 'Page';
+        break;
+      case 'posttype':
+        $name = 'PostType';
         break;
       default:
         $name = $fallback;

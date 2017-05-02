@@ -72,7 +72,7 @@ class Channel {
    * @since 1.0.0
    */
   public function get($endpoint, $params = []) {
-    return $this->request($endpoint, $params);
+    return $this->request($endpoint, $params)->getData();
   }
 
   /**
@@ -111,19 +111,38 @@ class Channel {
   /****************/
 
   public function getPosts($args = []) {
-    return $this->request("posts", $args)->getData();
+    if (is_string($args)) {
+      return $this->request($args);
+    }
+    return $this->get("posts", $args);
   }
 
   public function getPost($id) {
-    return $this->request("posts/$id")->getData();
+    return $this->get("posts/$id");
   }
 
   public function getPages($args = []) {
-    return $this->request("pages", $args)->getData();
+    return $this->get("pages", $args);
   }
 
   public function getPage($id) {
-    return $this->request("pages/$id")->getData();
+    return $this->get("pages/$id");
+  }
+
+  public function getTaxonomies() {
+    return $this->get("taxonomies");
+  }
+
+  public function getTaxonomy($slug) {
+    return $this->get("taxonomies/$slug");
+  }
+
+  public function getUsers() {
+    return $this->get('users');
+  }
+
+  public function getMedia() {
+    return $this->get('media');
   }
 
 }

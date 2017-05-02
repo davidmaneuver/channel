@@ -47,12 +47,14 @@ class Response {
     if (!empty($body) && is_string($body)) {
       $body = json_decode($body);
 
+      // var_dump($body);exit;
+
       if ($body) {
 
         // Some calls (like /taxonomies) return an object and not an array.
         if (is_object($body)) {
           
-          if (isset($body->id)) {
+          if (isset($body->slug)) {
             // Calls returning just 1 item also return an object.
             // Lets just make it a model. Right here, right now.
             $data = $this->createModel($body);
