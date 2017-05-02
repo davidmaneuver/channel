@@ -6,42 +6,75 @@ use Maneuver\Models\Post;
 
 abstract class ModelFactory {
 
-  public static function create(\stdClass $data) {
+  public static function create(\stdClass $data, $customClass = null) {
     // var_dump($data);exit;
-    $class = self::findClass($data);
+    $class = self::findClass($data, $customClass);
     $post = new $class();
     $post = self::cast($post, $data);
 
     return $post;
   }
 
-  private static function findClass($data) {
+  private static function findClass($data, $customClass = null) {
     $namespace = '\\Maneuver\\Models\\';
     $fallback = 'Post';
     $name = '';
+    $type = 'post';
 
+    // Determine the type of the object.
     if (isset($data->avatar_urls)) {
-      $name = 'User';
+      $type = 'user';
     }
-
     if (isset($data->media_type)) {
-      $name = 'Attachment';
+      $type = 'media';
     }
-
     if (isset($data->hierarchical)) {
-      $name = 'Taxonomy';
+      $type = 'taxonomy';
     }
-
     if (isset($data->taxonomy)) {
-      $name = 'Term';
+      $type = 'term';
+    }
+    if (isset($data->type) && $data->type == 'page') {
+      $type = 'page';
     }
 
-    if (isset($data->type)) {
-      $name = ucfirst($data->type);
+    // Set classname based on the type.
+    switch ($type) {
+      case 'user':
+        $name = 'User';
+        break;
+      case 'term':
+        $name = 'Term';
+        break;
+      case 'taxonomy':
+        $name = 'Taxonomy';
+        break;
+      case 'media':
+        $name = 'Attachment';
+        break;
+      case 'page':
+        $name = 'Page';
+        break;
+      default:
+        $name = $fallback;
     }
 
-    $class = $namespace . $name;
+    // Check for custom class.
+    if ($customClass) {
+      if (is_array($customClass)) {
+        if (array_key_exists($type, $customClass)) {
+          $class = $customClass[$type];
+        }
+      } else {
+        $class = $customClass;
+      }
+    }
 
+    if (!isset($class)) {
+      $class = $namespace . $name;
+    }
+
+    // Make sure the class exists.
     if (!class_exists($class)) {
       // Fallback to a basic Post.
       // Will be the case for custom post types.

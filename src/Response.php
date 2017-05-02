@@ -82,7 +82,7 @@ class Response {
    * @since 1.0.0
    */
   private function createModel($object) {
-    $model = ModelFactory::create($object);
+    $model = ModelFactory::create($object, $this->channel->getCustomClasses());
     $model->setChannel($this->channel);
     return $model;
   }

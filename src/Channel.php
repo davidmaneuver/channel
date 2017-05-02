@@ -14,6 +14,7 @@ class Channel {
   protected $auth;
   protected $base_uri;
   protected $options = [];
+  protected $classmap = [];
 
   public function __construct(array $options) {
     $this->initFromArray($options);
@@ -46,6 +47,14 @@ class Channel {
     }
 
     $this->options = $options;
+  }
+
+  public function setCustomClasses(array $classmap) {
+    $this->classmap = $classmap;
+  }
+
+  public function getCustomClasses() {
+    return $this->classmap;
   }
 
   /**
