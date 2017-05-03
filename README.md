@@ -6,11 +6,27 @@ Currently only supports GET requests.
 
 ---
 
+### Installation
+
+Install via composer:
+
+```
+composer require maneuver/channel
+``` 
+
+Then in your php file:
+
+```php
+require('vendor/autoload.php');
+```
+
+---
+
 ### Authentication
 
 #### Basic Authentication
 
-Make sure the [Basic Authentication](https://github.com/WP-API/Basic-Auth) plugin for Wordpress is installed and activiated.  
+Make sure the [Basic Authentication](https://github.com/WP-API/Basic-Auth) plugin for Wordpress is installed and activated.  
 _(should only be used for development purposes)_
 
 ```php
