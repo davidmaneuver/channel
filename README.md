@@ -14,11 +14,13 @@ Install via composer:
 composer require maneuver/channel
 ``` 
 
-Then in your php file:
+And include the autoloader:
 
 ```php
 require('vendor/autoload.php');
 ```
+
+Happy times. 🤙
 
 ---
 
@@ -27,7 +29,7 @@ require('vendor/autoload.php');
 #### Basic Authentication
 
 Make sure the [Basic Authentication](https://github.com/WP-API/Basic-Auth) plugin for Wordpress is installed and activated.  
-_(should only be used for development purposes)_
+_(should only be used for development purposes, as stated by the repository)_
 
 ```php
 $channel = new \Maneuver\Channel([
@@ -47,6 +49,10 @@ $channel = new \Maneuver\Channel([
   'token' => 'your-token',
 ]);
 ```
+
+#### OAuth
+
+_Currently not implemented._
 
 ---
 
