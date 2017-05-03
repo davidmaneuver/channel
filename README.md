@@ -1,4 +1,4 @@
-## PHP library for the Wordpress REST API
+# PHP library for the Wordpress REST API
 
 **CAUTION:** Not yet tested in production!
 
@@ -6,7 +6,29 @@ Currently only supports GET requests.
 
 ---
 
-### Installation
+**TABLE OF CONTENTS:**
+
+- [Installation](#installation)
+- [Authentication](#authentication)
+  - [Basic Authentication](#basic-authentication)
+  - [API Token](#api-token)
+  - [OAuth](#oauth)
+- [Usage](#usage)
+  - [Posts](#posts)
+  - [Pages](#pages)
+  - [Taxonomies & Terms](#taxonomies-&-terms)
+  - [Users](#users)
+  - [Media](#media)
+- [Custom Post Types](#custom-post-types)
+- [Slightly more advanced stuff](#slightly-more-advanced-stuff)
+  - [Endpoints](#endpoints)
+  - [Guzzle](#guzzle)
+  - [Custom Classes](#custom-classes)
+- [Todo:](#todo)
+
+---
+
+## Installation
 
 Install via composer:
 
@@ -22,11 +44,11 @@ require('vendor/autoload.php');
 
 Happy times. 🤙
 
----
 
-### Authentication
 
-#### Basic Authentication
+## Authentication
+
+### Basic Authentication
 
 Make sure the [Basic Authentication](https://github.com/WP-API/Basic-Auth) plugin for Wordpress is installed and activated.  
 _(should only be used for development purposes, as stated by the repository)_
@@ -39,7 +61,7 @@ $channel = new \Maneuver\Channel([
 ]);
 ```
 
-#### API Token
+### API Token
 
 Make sure the [Rooftop API Authentication](https://github.com/davidmaneuver/rooftop-api-authentication) plugin is installed and activated.
 
@@ -50,15 +72,15 @@ $channel = new \Maneuver\Channel([
 ]);
 ```
 
-#### OAuth
+### OAuth
 
 _Currently not implemented._
 
----
 
-### Usage
 
-#### Posts
+## Usage
+
+### Posts
 
 Retrieve a list of all posts (where post_type = 'post'):
 
@@ -85,7 +107,7 @@ Using Twig? Fear not:
 
 
 
-#### Pages
+### Pages
 
 Retrieve a list of all pages:
 
@@ -107,7 +129,7 @@ echo $page->content;
 
 
 
-#### Taxonomies & Terms
+### Taxonomies & Terms
 
 Retrieve all existing taxonomies:
 
@@ -131,7 +153,7 @@ $terms = $channel->get('categories'); // use plural taxonomy name
 ``` 
 
 
-#### Users
+### Users
 
 Get all users:
 
@@ -142,7 +164,7 @@ echo $users[0]->name;
 ```
 
 
-#### Media
+### Media
 
 Get all media:
 
@@ -150,11 +172,39 @@ Get all media:
 $media = $channel->getMedia();
 ```
 
----
 
-### Slightly more advanced
 
-#### Endpoints
+## Custom Post Types
+
+When you define a custom post type in your Wordpress installation, make sure you set the ```show_in_rest``` option to ```true```. This exposes an endpoint in the REST API to retrieve the posts. [Read the docs](https://codex.wordpress.org/Function_Reference/register_post_type)
+
+```php
+add_action('init', function(){
+
+  register_post_type('product', [
+    'labels' => [
+      'name'          => 'Products',
+      'singular_name' => 'Product',
+    ],
+    'public'        => true,
+    'show_in_rest'  => true,
+    'rest_base'     => 'products' // defaults to the post type slug, 'product' in this case
+  ]);
+
+});
+```
+
+Then use the general 'get' method:
+
+```php
+$products = $channel->get('products'); // Pass in the 'rest_base' of the custom post type.
+```
+
+
+
+## Slightly more advanced stuff
+
+### Endpoints
 
 You can actually call any endpoint using the 'get' method:
 
@@ -165,7 +215,7 @@ $latest = $channel->get('posts?per_page=5');
 
 Read more about all endpoints in the [REST API Handbook](https://developer.wordpress.org/rest-api/)
 
-#### Guzzle
+### Guzzle
 
 You can pass in more requestOptions for Guzzle:
 
@@ -178,7 +228,7 @@ $latest = $channel->get('posts?per_page=5', [
 Read more about the Guzzle RequestOptions [here](http://docs.guzzlephp.org/en/latest/request-options.html).
 
 
-#### Custom Classes
+### Custom Classes
 
 Every call returns an object (or array of objects) extending the '\Maneuver\Models\Base' class. You can define your own classes if needed.
 
@@ -208,7 +258,7 @@ echo get_class($post);
 
 ---
 
-### Todo:
+## Todo:
 
 - Better custom post types support
 - OAuth authentication

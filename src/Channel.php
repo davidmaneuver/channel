@@ -76,7 +76,7 @@ class Channel {
   }
 
   /**
-   * Makes the actual request and returns a Response with data.
+   * Makes the actual request and returns a Response.
    * 
    * @since 1.0.0
    */
