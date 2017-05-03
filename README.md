@@ -259,6 +259,6 @@ echo get_class($post);
 
 ## Todo:
 
-- Better custom post types support
+- More support for ACF fields
 - OAuth authentication
 - Add WP_Query-like parameters
