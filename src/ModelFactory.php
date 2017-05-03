@@ -19,7 +19,7 @@ abstract class ModelFactory {
     $namespace = '\\Maneuver\\Models\\';
     $fallback = 'Base';
     $name = '';
-    $type = '';
+    $type = 'post';
 
     // Determine the type of the object.
     if (isset($data->avatar_urls)) {
@@ -39,6 +39,10 @@ abstract class ModelFactory {
     }
     if (isset($data->type) && $data->type == 'page') {
       $type = 'page';
+    }
+
+    if ($type == 'post' && isset($data->type)) {
+      $type = $data->type;
     }
 
     // Set classname based on the type.

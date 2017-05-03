@@ -232,8 +232,6 @@ Read more about the Guzzle RequestOptions [here](http://docs.guzzlephp.org/en/la
 
 Every call returns an object (or array of objects) extending the '\Maneuver\Models\Base' class. You can define your own classes if needed.
 
-**Note**: Not yet supported for custom post types. Soon.
-
 ```php
 class MyPost extends \Maneuver\Models\Base {
   public function fullTitle() {
@@ -245,7 +243,8 @@ $channel->setCustomClasses([
   // 'type' => 'ClassName'
   // eg: 'user' => 'MyUser'
   // or:
-  'post' => 'MyPost',
+  'post'    => 'MyPost',
+  'product' => 'MyPost', // custom post type
 ]);
 
 $post = $channel->getPost(1);
