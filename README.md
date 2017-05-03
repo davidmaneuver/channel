@@ -1,6 +1,6 @@
 ## PHP library for the Wordpress REST API
 
-**Important:** Not yet tested in production!
+**CAUTION:** Not yet tested in production!
 
 Currently only supports GET requests.
 
@@ -130,19 +130,64 @@ $media = $channel->getMedia();
 
 ---
 
-### Extra
+### Slightly more advanced
 
-You can call any endpoint using the 'get' method:
+#### Endpoints
+
+You can actually call any endpoint using the 'get' method:
 
 ```php
 $post_types = $channel->get('types');
+$latest = $channel->get('posts?per_page=5');
 ```
 
-Read more in the [REST API Handbook](https://developer.wordpress.org/rest-api/)
+Read more about all endpoints in the [REST API Handbook](https://developer.wordpress.org/rest-api/)
+
+#### Guzzle
+
+You can pass in more requestOptions for Guzzle:
+
+```php
+$latest = $channel->get('posts?per_page=5', [
+  'proxy' => 'tcp://localhost:8125',
+]);
+```
+
+Read more about the Guzzle RequestOptions [here](http://docs.guzzlephp.org/en/latest/request-options.html).
+
+
+#### Custom Classes
+
+Every call returns an object (or array of objects) extending the '\Maneuver\Models\Base' class. You can define your own classes if needed.
+
+**Note**: Not yet supported for custom post types. Soon.
+
+```php
+class MyPost extends \Maneuver\Models\Base {
+  public function fullTitle() {
+    return 'Post: ' . $this->title;
+  }
+}
+
+$channel->setCustomClasses([
+  // 'type' => 'ClassName'
+  // eg: 'user' => 'MyUser'
+  // or:
+  'post' => 'MyPost',
+]);
+
+$post = $channel->getPost(1);
+
+echo $post->fullTitle();
+
+echo get_class($post);
+// => 'MyPost'
+```
 
 ---
 
 ### Todo:
 
+- Better custom post types support
 - OAuth authentication
 - Add WP_Query-like parameters
