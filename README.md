@@ -260,5 +260,6 @@ echo get_class($post);
 ## Todo:
 
 - More support for ACF fields
-- OAuth authentication
+- Better support for images
 - Add WP_Query-like parameters
+- OAuth authentication
