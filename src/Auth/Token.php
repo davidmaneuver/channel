@@ -16,7 +16,7 @@ class Token extends Auth {
   }
 
   public function setRequestHeaders(&$headers) {
-    $headers['API_TOKEN'] = $this->token;
+    $headers['api-token'] = $this->token;
   }
 
 }
