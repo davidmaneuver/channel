@@ -6,6 +6,11 @@ use Maneuver\Models\Post;
 
 abstract class ModelFactory {
 
+  /**
+   * Creates a new class for an object.
+   * 
+   * @since 1.0.0
+   */
   public static function create(\stdClass $data, $customClass = null) {
     // var_dump($data);exit;
     $class = self::findClass($data, $customClass);
@@ -15,6 +20,11 @@ abstract class ModelFactory {
     return $post;
   }
 
+  /**
+   * Finds the right class for a specific object and returns the class name.
+   * 
+   * @since 1.0.0
+   */
   private static function findClass($data, $customClass = null) {
     $namespace = '\\Maneuver\\Models\\';
     $fallback = 'Base';
@@ -94,6 +104,12 @@ abstract class ModelFactory {
     return $class;
   }
 
+  /**
+   * Casts an stdClass object to a new object.
+   * Copying all properties.
+   * 
+   * @since 1.0.0
+   */
   private static function cast($destination, $sourceObject)
   {
     $sourceReflection = new \ReflectionObject($sourceObject);
