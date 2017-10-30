@@ -70,6 +70,10 @@ class Response {
           // NOTE: is it overkill to do the entire logic for every item in the list?
           $data = array_map([$this, 'createModel'], $body);
         }
+
+        if (is_string($body)) {
+          $data = $body;
+        }
       }
     }
 
