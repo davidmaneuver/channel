@@ -2,6 +2,8 @@
 
 namespace Maneuver\Models;
 
+use Maneuver\ModelFactory;
+
 class Base {
 
   protected $channel;
@@ -17,7 +19,25 @@ class Base {
       return $this->{'post_' . $prop}->rendered;
     }
     if (property_exists($this->custom, $prop)) {
-      return $this->custom->$prop;
+      $val = $this->custom->$prop;
+      $was_object = false;
+
+      if (is_object($val)) {
+        $val = [$val];
+        $was_object = true;
+      }
+
+      if (is_array($val)) {
+        foreach($val as &$object) {
+          if (is_object($object)) {
+            $model = ModelFactory::create($object, $this->channel->getCustomClasses());
+            $model->setChannel($this->channel);
+            $object = $model;
+          }
+        }
+      }
+
+      return $was_object ? reset($val) : $val;
     }
   }
 
