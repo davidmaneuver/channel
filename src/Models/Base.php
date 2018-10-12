@@ -67,7 +67,7 @@ class Base {
     }
     $isset = property_exists($this, $prop);
 
-    if (!$isset) {
+    if (!$isset && is_object($this->custom)) {
       // Check custom properties
       $isset = property_exists($this->custom, $prop);
     }
