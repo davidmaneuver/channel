@@ -119,6 +119,9 @@ abstract class ModelFactory {
       $sourceProperty->setAccessible(true);
       $name = $sourceProperty->getName();
       $value = $sourceProperty->getValue($sourceObject);
+      if (is_object($value) && property_exists($value, 'rendered')) {
+        $value->rendered = html_entity_decode($value->rendered);
+      }
       if ($destinationReflection->hasProperty($name)) {
         $propDest = $destinationReflection->getProperty($name);
         $propDest->setAccessible(true);
