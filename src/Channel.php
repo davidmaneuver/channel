@@ -145,4 +145,8 @@ class Channel {
     return $this->get('media');
   }
 
+  public function getOptions() {
+    return $this->get('options');
+  }
+
 }
