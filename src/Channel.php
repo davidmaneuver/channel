@@ -3,6 +3,7 @@
 namespace Maneuver;
 
 use Maneuver\Auth\Auth;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 
 /**
 *  Main class
@@ -13,8 +14,10 @@ class Channel {
 
   protected $auth;
   protected $base_uri;
-  protected $options = [];
   protected $classmap = [];
+  protected $options = [
+    'cache' => true,
+  ];
 
   public function __construct(array $options) {
     $this->initFromArray($options);
@@ -46,7 +49,7 @@ class Channel {
       $this->auth = Auth::create();
     }
 
-    $this->options = $options;
+    $this->options = array_merge($this->options, $options);
   }
 
   public function setCustomClasses(array $classmap) {
@@ -85,24 +88,43 @@ class Channel {
       throw new Exception('Only GET request are supported at the moment.');
     }
 
-    $client = new \GuzzleHttp\Client([
-      'base_uri' => $this->base_uri,
-    ]);
+    $cacheKey = md5(implode('|', [
+      $endpoint, 
+      implode(',', $args), 
+      $method]
+    ));
 
-    $requestOptions = [];
-    $requestOptions['http_errors'] = ini_get('display_errors') ? TRUE : FALSE;
+    $cache = new FilesystemCache('', 3600, 'cache');
 
-    $headers = [];
+    if (!$this->options['cache'] || !$cache->has($cacheKey)) {
 
-    $this->auth->setRequestHeaders($headers);
+      $client = new \GuzzleHttp\Client([
+        'base_uri' => $this->base_uri,
+      ]);
 
-    if (!empty($headers)) {
-      $requestOptions['headers'] = $headers;
+      $requestOptions = [];
+      $requestOptions['http_errors'] = ini_get('display_errors') ? TRUE : FALSE;
+
+      $headers = [];
+
+      $this->auth->setRequestHeaders($headers);
+
+      if (!empty($headers)) {
+        $requestOptions['headers'] = $headers;
+      }
+
+      $requestOptions = array_merge($requestOptions, $args);
+
+      $res = $client->request($method, $endpoint, $requestOptions);
+
+      $json = (string)$res->getBody();
+      $cache->set($cacheKey, $json);
+
+    } else {
+      $json = $cache->get($cacheKey);
+      $res = new \GuzzleHttp\Psr7\Response(200, [], $json);
     }
 
-    $requestOptions = array_merge($requestOptions, $args);
-
-    $res = $client->request($method, $endpoint, $requestOptions);
     return new Response($this, $res);
   }
 
@@ -143,6 +165,10 @@ class Channel {
 
   public function getMedia() {
     return $this->get('media');
+  }
+
+  public function getOptions() {
+    return $this->get('options');
   }
 
 }
