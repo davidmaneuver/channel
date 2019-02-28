@@ -71,7 +71,7 @@ class Response {
           $data = array_map([$this, 'createModel'], $body);
         }
 
-        if (is_string($body)) {
+        if (is_scalar($body)) {
           $data = $body;
         }
       }
