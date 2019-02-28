@@ -1,7 +1,5 @@
 # PHP library for the Wordpress REST API
 
-**CAUTION:** Not yet tested in production!
-
 Currently only supports GET requests.
 
 ---
